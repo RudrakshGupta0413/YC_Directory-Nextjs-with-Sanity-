@@ -5,9 +5,10 @@ import React from 'react';
 import Image from 'next/image';
 import { LogOut } from "lucide-react";
 import { signOut, signIn } from 'next-auth/react';
+import { Session } from 'next-auth';
 
 interface NavbarClientProps {
-    session: any; // Update with the correct session type if needed
+    session: Session | null; // Update with the correct session type if needed
 }
 
 const NavbarClient: React.FC<NavbarClientProps> = ({ session }) => {
