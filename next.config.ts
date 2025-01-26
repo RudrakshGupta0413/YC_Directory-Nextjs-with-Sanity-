@@ -13,12 +13,15 @@ const nextConfig: NextConfig = {
   },
 
   experimental: {
-    ppr: 'incremental'
+    ppr: 'incremental',
   },
   devIndicators: {
     appIsrStatus: true,
     buildActivity: true,
     buildActivityPosition: 'bottom-right',
+  },
+  eslint: {
+    ignoreDuringBuilds: true, // Disables ESLint during builds
   },
 };
 

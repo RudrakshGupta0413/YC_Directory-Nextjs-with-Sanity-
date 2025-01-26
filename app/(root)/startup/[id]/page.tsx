@@ -4,8 +4,14 @@ import { STARTUPS_BY_ID_QUERY } from '@/sanity/lib/queries';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import React from 'react'
+import React, { Suspense } from 'react'
+import markdownit from 'markdown-it';
+import { Skeleton } from '@/components/ui/skeleton';
+import { View } from '@/components/View';
 
+
+
+const md = markdownit();
 export const experimental_ppr = true;
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
@@ -15,6 +21,8 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
     const post = await client.fetch(STARTUPS_BY_ID_QUERY, { id });
 
     if (!post) return notFound();
+
+    const parsedContent = md.render(post?.pitch || '');
     return (
         <>
             <section className='pink_container !min-h-[230px]'>
@@ -35,14 +43,27 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
                             <div>
                                 <p className='text-20-medium'>{post.author.name}</p>
                                 <p className='text-16-medium !text-black-600'>@{post.author.username || 'username_not_available'}</p>
-                            </div>      
+                            </div>
                         </Link>
 
                         <p className='category-tag'>{post.category}</p>
                     </div>
 
                     <h3 className='text-30-bold'>Pitch Details</h3>
+                    {parsedContent ? (
+                        <article className='parse max-w-4xl font-work-sans break-all' dangerouslySetInnerHTML={{ __html: parsedContent }} />
+                    ) : (
+                        <p className='no-result'>
+                            No details provided
+                        </p>
+                    )}
                 </div>
+
+                <hr className='divider' />
+
+                <Suspense fallback={<Skeleton className='view_skeleton' />}>
+                    <View id={id} />
+                </Suspense>
             </section>
 
         </>
